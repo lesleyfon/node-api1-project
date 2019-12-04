@@ -82,4 +82,32 @@ app.delete('/api/user/:id', (req, res)=>{
     }
     
 })
+
+// PUT || Update || Edit
+
+app.put('/api/user/:id', (req, res)=>{
+    console.log('Hello')
+    const {name, bio} = req.body;
+    const id = req.params.id;
+
+    if(!id){
+        res.status(404).json({ message: "The user with the specified ID does not exist." })
+    }else if(!name || !bio){
+        res.status(400).json({ message: "Please provide name and bio for the user." })
+        
+    } else{
+        db.update(id, { name, bio })
+            .then(response => {
+                console.log(response)
+                res.status(201).json({message: 'Update Successful', newUser: {name, bio}})
+            })
+            .catch(err => {
+                console.log(err)
+                res.status(500).json({ errorMessage: "The user information could not be modified." })
+                
+            })
+    }
+   
+});
+
 app.listen(PORT, ()=> console.log(`Server listening to http://localhost:${PORT}`))
