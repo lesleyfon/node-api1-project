@@ -22,6 +22,7 @@ app.get('/api/users', (req, res)=>{
     })
   
 })
+//Endpoint for a specific user
 app.get('/api/users/:id', (req, res)=>{
     const id = req.params.id;
     if(!id){
@@ -43,20 +44,31 @@ app.get('/api/users/:id', (req, res)=>{
   
 })
 
-// app.post('/api/users', (req, res)=>{
-//     console.log(req 
-//         )
-//     // db.find().then(response =>{
-//     //     res.status(200).send({
-//     //             message: 'Request successful',
-//     //             data: response    
-//     //         })
-//     // }).catch(err=>{
-//     //     res.status(404).send({
-//     //         message: 'Not found',
-//     //         data: err    
-//     //     })
-//     // })
-//   res.status(200).send(req.body)
-// })
+app.post('/api/users', (req, res)=>{
+    const {name, bio} = req.body;
+    if(!name || !bio){
+        res.status(404).json({ errorMessage: "Please provide name and bio for the user." })
+    } else{
+        db.insert({name, bio})
+            .then(response => {
+                console.log(response)
+                res.status(201).json({message: 'Post Successful', newUser: {name, bio}})
+            })
+            .catch(err => {
+                res.status(500).json({message: 'error'})
+                
+            })
+    }
+    // db.find().then(response =>{
+    //     res.status(200).send({
+    //             message: 'Request successful',
+    //             data: response    
+    //         })
+    // }).catch(err=>{
+    //     res.status(404).send({
+    //         message: 'Not found',
+    //         data: err    
+    //     })
+    // })
+})
 app.listen(PORT, ()=> console.log(`Server listening to http://localhost:${PORT}`))
